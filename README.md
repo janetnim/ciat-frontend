@@ -12,6 +12,6 @@ To run the repo:
 
 - Sign up and log in
 
-- On a successful log in you should be redirected to the home page which has the file uploader. Click on "Select files to upload" and select multiple test file. [Download the flower test data](https://huggingface.co/datasets/smutuvi/flower_test_data)
+- On a successful log-in, you will be redirected to the home page which has the file uploader. Click on "Select files to upload" and select multiple test file. [Download the flower test data](https://huggingface.co/datasets/smutuvi/flower_test_data)
 
-- On "Submit" images with predictions should be displayed on the page
+- On "Submit", images with predictions should be displayed on the page
