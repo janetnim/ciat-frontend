@@ -40,10 +40,6 @@ const ImageProcess = () => {
     <div className="image-process-container">
       <section className="form">
         <h5 className='form-title'>Images</h5>
-
-        {/* <button alt="text" onClick={onAddDocuments}>
-          Upload images
-        </button> */}
         <label htmlFor='file-upload' className='custom-file-upload'>
           <span className='file-upload-icon'>&#128206;</span>
           <span>Select files to upload</span>
@@ -86,7 +82,6 @@ const ImageProcess = () => {
         {images.map((file, index) => (
           <img key={index} src={file.dataUrl} />
         ))}
-        {/* {images?.map((image, index) => (<img src={`localhost:8080/tested_images/${image.path}`} key={index} alt="processed-image" />))} */}
       </section>
     </div>
   );

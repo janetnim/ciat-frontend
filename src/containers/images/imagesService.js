@@ -35,54 +35,26 @@ export const imagesApi = createApi({
               extractedFiles.push({
                 name: zipEntry.name,
                 content: zipEntry.async('text'),
-                path: zipEntry.unsafeOriginalName
               });
             });
 
-            const stuff = await Promise.all(promises).then(function () {
+            const unzippedResponse = await Promise.all(promises).then(function () {
               const newValues = [];
               const canvas = document.createElement('canvas');
               Object.entries(extractedFiles).map(async ([key, val]) =>
                 {
                   var content = await val.content;
-                  // const ctx = canvas.getContext('2d');
-                  // ctx.font = '30px Arial';
-                  // ctx.fillText(content, 10, 50);
                   const dataUrl = canvas.toDataURL();
-                  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', {content});
-                  // var image = new Image();
-                  // image.onload = function(){
-                  //   console.log(image.width); // image is loaded and we have image width
-                  // }
-                  // image.src = dataUrl;
-                  // document.body.appendChild(image);
-                  var newImage = document.createElement('img');
-                  newImage.src = dataUrl;
-                  // newImage.width = newImage.height = "80";
-                  // document.querySelector('#imageContainer').innerHTML = newImage.outerHTML;
-                  // console.log('|||||||||', {val}, {content});
-
-                  newValues.push({name: val.name, content: content, path: val.path, dataUrl: "data:image/png;base64," + content});
+                  newValues.push({name: val.name, content: content, dataUrl: dataUrl});
                 }
               );
 
               return newValues;
             });
 
-            console.log('|||||||||stuff', {stuff});
-
-            // new_zip.loadAsync(data).then(function(resp) {
-            //     // var jsonFile = await zipped.file("theJsonFile.json").async("text");
-            //     console.log('???????????????resp', resp.files);
-            //     const fileNames = Object.keys(resp.files);
-            //     fileNames.map(name => console.log('===========', resp.files[name]));
-            //     fileNames.map(name => console.log('===========', window.URL.createObjectURL(resp.files[name])));
-            //     // resp.files.map(([key, val]) => console.log('===========', {key}, {val}));
-            // })
-            return { data: stuff };
+            return { data: unzippedResponse };
           },
           headers: {
-            // "content-type": "multipart/form-data",
             "Authorization": `Bearer ${localStorage.getItem("token")}`
           }
         };
