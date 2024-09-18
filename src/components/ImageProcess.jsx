@@ -82,7 +82,9 @@ const ImageProcess = () => {
         <span hidden={!isError} className="error">{error?.data?.message}</span>
         <i hidden={!isLoading}>Images processing...</i>
         <i hidden={hasImageResults || isLoading}>No images to display...</i>
-        <div id="images"></div>
+        <div id="images">
+          <i hidden={!hasImageResults}>Image Results:</i>
+        </div>
       </section>
     </div>
   );
