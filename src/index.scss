@@ -78,7 +78,6 @@ a {
 }
 
 .main-container {
-  position: relative;
   height: 100vh;
   width: 100%;
   top: 80px;
@@ -190,7 +189,7 @@ a {
     width: 80%;
     height: 85vh;
     position: relative;
-    top: 22px;
+    top: 10%;
     left: 10%;
 
     .form {
@@ -207,6 +206,17 @@ a {
 
       i {
         font-weight: 400;
+      }
+
+      #images {
+        height: 100%;
+        overflow-y: scroll;
+        overflow-x: hidden;
+
+        img {
+          width: 90%;
+          height: 90%;
+        }
       }
     }
   }

@@ -3,7 +3,7 @@ import { imagesApi } from './imagesService';
 
 const initialState = {
   loading: false,
-  images: [],
+  hasImageResults: false,
   error: null,
   success: false,
 };
@@ -16,7 +16,7 @@ const imagesSlice = createSlice({
     builder.addMatcher(
       imagesApi.endpoints.processImages.matchFulfilled,
       (state, {payload}) => {
-        state.images = payload.data;
+        state.hasImageResults = payload.data;
       }
     )
   },

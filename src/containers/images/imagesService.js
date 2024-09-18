@@ -8,7 +8,7 @@ export const imagesApi = createApi({
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token;
       if (token) {
-       // include token in req header
+       // include token in request header
         headers.set('authorization', `Bearer ${token}`) ;
 
         return headers;
@@ -24,35 +24,22 @@ export const imagesApi = createApi({
           body: files,
           responseHandler: async (response) => {
             const data = await response.blob();
-            const new_zip = new JSZip();
-            const zipFile = await new_zip.loadAsync(data, { base64: true });
-            let extractedFiles = [];
-            const promises = [];
-
-            zipFile.forEach((relativePath, zipEntry) => {
-              promises.push(new_zip.file(zipEntry.name).async("text"));
-
-              extractedFiles.push({
-                name: zipEntry.name,
-                content: zipEntry.async('text'),
+            const jszip = new JSZip();
+            const parentImagesContainer = document.getElementById('images');
+            const imageResults = await jszip.loadAsync(data).then(({files}) => {
+              const imageFiles = Object.entries(files);
+              imageFiles.forEach(([, image]) => {
+                image.async('blob').then(blob => {
+                  const img = new Image();
+                  img.src = URL.createObjectURL(blob);
+                  parentImagesContainer.append(img);
+                });
               });
-            });
 
-            const unzippedResponse = await Promise.all(promises).then(function () {
-              const newValues = [];
-              const canvas = document.createElement('canvas');
-              Object.entries(extractedFiles).map(async ([key, val]) =>
-                {
-                  var content = await val.content;
-                  const dataUrl = canvas.toDataURL();
-                  newValues.push({name: val.name, content: content, dataUrl: dataUrl});
-                }
-              );
+              return imageFiles.length > 0;
+            })
 
-              return newValues;
-            });
-
-            return { data: unzippedResponse };
+            return { data: imageResults };
           },
           headers: {
             "Authorization": `Bearer ${localStorage.getItem("token")}`

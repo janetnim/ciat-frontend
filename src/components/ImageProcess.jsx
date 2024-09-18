@@ -4,7 +4,7 @@ import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { useProcessImagesMutation } from '../containers/images/imagesService';
 
 const ImageProcess = () => {
-  const { images } = useSelector((state) => state.images);
+  const { hasImageResults } = useSelector((state) => state.images);
   const [processImages, { isLoading, isError, error }] = useProcessImagesMutation();
   const {
     control, handleSubmit } = useForm({
@@ -51,7 +51,10 @@ const ImageProcess = () => {
           multiple
           onChange={handleAddDocuments}
         />
-        <button alt="submit" onClick={handleSubmit(onFormSubmit)} disabled={fields.length < 1}>
+        <button alt="submit"
+          onClick={handleSubmit(onFormSubmit)}
+          disabled={isLoading || fields.length < 1}
+        >
           Submit
         </button>
 
@@ -76,12 +79,10 @@ const ImageProcess = () => {
         ))}
       </section>
       <section className="image-results" hidden={isLoading}>
-        <span hidden={!isError} className='error'>{error?.data?.message}</span>
+        <span hidden={!isError} className="error">{error?.data?.message}</span>
         <i hidden={!isLoading}>Images processing...</i>
-        <i hidden={images.length >= 1 || isLoading}>No images to display...</i>
-        {images.map((file, index) => (
-          <img key={index} src={file.dataUrl} />
-        ))}
+        <i hidden={hasImageResults || isLoading}>No images to display...</i>
+        <div id="images"></div>
       </section>
     </div>
   );
