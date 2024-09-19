@@ -18,6 +18,12 @@ const imagesSlice = createSlice({
       (state, {payload}) => {
         state.hasImageResults = payload.data;
       }
+    ),
+    builder.addMatcher(
+      imagesApi.endpoints.runTestData.matchFulfilled,
+      (state, {payload}) => {
+        state.hasImageResults = payload.data;
+      }
     )
   },
 });

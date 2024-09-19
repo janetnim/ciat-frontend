@@ -1,11 +1,12 @@
 import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { useProcessImagesMutation } from '../containers/images/imagesService';
+import { useProcessImagesMutation, useRunTestDataMutation } from '../containers/images/imagesService';
 
 const ImageProcess = () => {
   const { hasImageResults } = useSelector((state) => state.images);
-  const [processImages, { isLoading, isError, error }] = useProcessImagesMutation();
+  const [processImages, { isLoading, isError, isSuccess, error }] = useProcessImagesMutation();
+  const [runTestData, { isLoading: isLoadingTestData, isSuccess: isSuccessTestData, isError: hasTestDataError, error: testDataError }] = useRunTestDataMutation();
   const {
     control, handleSubmit } = useForm({
     defaultValues: {
@@ -19,6 +20,11 @@ const ImageProcess = () => {
     const formData = new FormData();
     documents.map(doc => formData.append('files', doc.file, doc.file.name));
     await processImages(formData);
+  };
+
+  const onProcessTestData = () => {
+    handleClearAlllDocuments();
+    runTestData();
   };
 
   const { fields, append, remove } = useFieldArray({
@@ -35,6 +41,10 @@ const ImageProcess = () => {
     append(files);
     hiddenFileInput.current.value = "";
   };
+
+  const handleClearAlllDocuments = () => {
+    fields.map(({ documentId, file }, index) => remove(index));
+  }
 
   return (
     <div className="image-process-container">
@@ -53,9 +63,17 @@ const ImageProcess = () => {
         />
         <button alt="submit"
           onClick={handleSubmit(onFormSubmit)}
-          disabled={isLoading || fields.length < 1}
+          disabled={isLoading || isLoadingTestData || fields.length < 1}
         >
           Submit
+        </button>
+
+        <button
+          alt="process"
+          className="test-data"
+          onClick={onProcessTestData} disabled={isLoading || isLoadingTestData}
+        >
+          Run test dataset
         </button>
 
         {fields.map(({ documentId, file }, index) => (
@@ -79,11 +97,13 @@ const ImageProcess = () => {
         ))}
       </section>
       <section className="image-results" hidden={isLoading}>
-        <span hidden={!isError} className="error">{error?.data?.message}</span>
-        <i hidden={!isLoading}>Images processing...</i>
-        <i hidden={hasImageResults || isLoading}>No images to display...</i>
+        <span hidden={!isError && !hasTestDataError} className="error">
+          {error?.data?.message || testDataError?.data?.message}
+        </span>
+        <i hidden={!isLoading && !isLoadingTestData}>Images processing...</i>
+        <i hidden={hasImageResults || isLoading || isLoadingTestData}>No images to display...</i>
+        <i hidden={!hasImageResults && (!isSuccess || !isSuccessTestData)}>Image Results:</i>
         <div id="images">
-          <i hidden={!hasImageResults}>Image Results:</i>
         </div>
       </section>
     </div>

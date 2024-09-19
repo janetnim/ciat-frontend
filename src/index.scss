@@ -98,6 +98,27 @@ a {
     box-shadow: rgba(0, 0, 0, 0.1);
     transition: all 0.4s ease-out;
 
+    button.test-data {
+      border: none;
+      background: white;
+      color: var(--primary-link-color);
+      text-align: left;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding-top: 10px;
+      margin: 0;
+
+      &:hover {
+        color: black;
+        text-decoration: underline;
+      }
+
+      &:disabled {
+        background-color: white;
+        color: grey;
+      }
+    }
+
     .form-title, .page-title {
       font-size: 1.2rem;
       text-align: center;
@@ -152,6 +173,7 @@ a {
 
         & + span {
           color: red;
+          margin-left: auto;
         }
       }
     }

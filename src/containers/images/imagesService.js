@@ -26,6 +26,39 @@ export const imagesApi = createApi({
             const data = await response.blob();
             const jszip = new JSZip();
             const parentImagesContainer = document.getElementById('images');
+            parentImagesContainer.replaceChildren();
+            const imageResults = await jszip.loadAsync(data).then(({files}) => {
+              const imageFiles = Object.entries(files);
+              imageFiles.forEach(([, image]) => {
+                image.async('blob').then(blob => {
+                  const img = new Image();
+                  img.src = URL.createObjectURL(blob);
+                  parentImagesContainer.append(img);
+                });
+              });
+
+              return imageFiles.length > 0;
+            })
+
+            return { data: imageResults };
+          },
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          }
+        };
+      },
+    }),
+    runTestData: builder.mutation({
+      query(files) {
+        return {
+          url: '/v1/run-test-data',
+          method: 'POST',
+          body: files,
+          responseHandler: async (response) => {
+            const data = await response.blob();
+            const jszip = new JSZip();
+            const parentImagesContainer = document.getElementById('images');
+            parentImagesContainer.replaceChildren();
             const imageResults = await jszip.loadAsync(data).then(({files}) => {
               const imageFiles = Object.entries(files);
               imageFiles.forEach(([, image]) => {
@@ -50,4 +83,4 @@ export const imagesApi = createApi({
   }),
 });
 
-export const { useProcessImagesMutation } = imagesApi;
+export const { useProcessImagesMutation, useRunTestDataMutation } = imagesApi;
